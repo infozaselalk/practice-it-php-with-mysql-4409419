@@ -6,42 +6,69 @@
 // database: "mariadb"
 // port:     3306
 
+$db = new mysqli("127.0.0.1", "mariadb", "mariadb", "mariadb", 3306);
+
+if ($db->connect_errno) {
+  exit("Failed to Connect");
+}
+
+$sql = "SELECT * FROM tasks ORDER BY priority DESC";
+$result = $db->query($sql);
+
+if (!$result) {
+  exit("SQL Query is failed!");
+}
+
 ?>
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>Task Manager: Task List</title>
-  </head>
-  <body>
 
-    <header>
-      <h1>Task Manager</h1>
-    </header>
+<head>
+  <title>Task Manager: Task List</title>
+</head>
 
-    <section>
+<body>
 
-      <h1>Task List</h1>
+  <header>
+    <h1>Task Manager</h1>
+  </header>
 
-    	<table>
-    	  <tr>
-          <th>ID</th>
-          <th>Priority</th>
-          <th>Completed</th>
-    	    <th>Description</th>
-    	  </tr>
+  <section>
 
-        <?php // loop through tasks ?>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-      	    <td></td>
-      	  </tr>
-        <?php // end loop ?>
-    	</table>
+    <h1>Task List</h1>
 
-    </section>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Priority</th>
+        <th>Completed</th>
+        <th>Description</th>
+      </tr>
 
-  </body>
+      <?php // loop through tasks 
+      while ($row = $result->fetch_object()) {
+      ?>
+        <tr>
+          <td><?php echo $row->id  ?></td>
+          <td><?php echo $row->priority  ?></td>
+          <td><?php echo $row->completed  ?></td>
+          <td><?php echo $row->description  ?></td>
+        </tr>
+      <?php // end loop 
+      }
+      ?>
+    </table>
+
+  </section>
+
+</body>
+
 </html>
+
+<?php
+
+$result->free();
+$db->close();
+
+?>
